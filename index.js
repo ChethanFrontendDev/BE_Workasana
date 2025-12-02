@@ -6,7 +6,7 @@ const Tag = require("./models/tag.models");
 const User = require("./models/user.models");
 const Task = require("./models/task.models");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const express = require("express");
 const app = express();
@@ -131,7 +131,7 @@ async function createProject(projectDetails) {
     throw error;
   }
 }
-app.post("/projects", async (req, res) => {
+app.post("/projects", verifyJWT, async (req, res) => {
   try {
     const savedProject = await createProject(req.body);
 
@@ -192,7 +192,7 @@ async function deleteProjectById(id) {
     throw error;
   }
 }
-app.delete("/projects/:id", async (req, res) => {
+app.delete("/projects/:id", verifyJWT, async (req, res) => {
   try {
     const deletedProject = await deleteProjectById(req.params.id);
 
@@ -219,7 +219,7 @@ async function createUser(userDetails) {
     throw error;
   }
 }
-app.post("/users", async (req, res) => {
+app.post("/users", verifyJWT, async (req, res) => {
   try {
     const savedUser = await createUser(req.body);
     if (savedUser) {
@@ -255,7 +255,7 @@ async function readAllUsers() {
     throw error;
   }
 }
-app.get("/users", async (req, res) => {
+app.get("/users", verifyJWT, async (req, res) => {
   try {
     const readUsers = await readAllUsers();
 
@@ -333,7 +333,7 @@ async function getTeamMembers(teamId) {
     throw error;
   }
 }
-app.get("/teams/:teamId/members", async (req, res) => {
+app.get("/teams/:teamId/members", verifyJWT, async (req, res) => {
   try {
     const { teamId } = req.params;
 
@@ -362,7 +362,7 @@ async function deleteTeamById(teamId) {
     throw error;
   }
 }
-app.delete("/teams/:teamId", async (req, res) => {
+app.delete("/teams/:teamId", verifyJWT, async (req, res) => {
   try {
     const deletedTeam = await deleteTeamById(req.params.teamId);
 
@@ -394,7 +394,7 @@ async function addTeamMembers(teamId, userId) {
     throw error;
   }
 }
-app.post("/teams/:teamId/add-member", async (req, res) => {
+app.post("/teams/:teamId/add-member", verifyJWT, async (req, res) => {
   try {
     const { teamId } = req.params;
     const { userId } = req.body;
@@ -480,7 +480,7 @@ async function createTask(taskDetails) {
     throw error;
   }
 }
-app.post("/tasks", async (req, res) => {
+app.post("/tasks", verifyJWT, async (req, res) => {
   try {
     const savedTask = await createTask(req.body);
 
@@ -572,7 +572,7 @@ async function readAllTasks(query) {
     throw error;
   }
 }
-app.get("/tasks", async (req, res) => {
+app.get("/tasks", verifyJWT, async (req, res) => {
   // console.log("QUERY RECEIVED:", req.query);
   try {
     const readTasks = await readAllTasks(req.query);
@@ -597,7 +597,7 @@ async function updateTaskStatus(taskId, status) {
     throw error;
   }
 }
-app.put("/tasks/:id", async (req, res) => {
+app.put("/tasks/:id", verifyJWT, async (req, res) => {
   try {
     const updatedTask = await updateTaskStatus(req.params.id, req.body);
 
@@ -620,7 +620,7 @@ async function deleteTaskById(id) {
     throw error;
   }
 }
-app.delete("/tasks/:id", async (req, res) => {
+app.delete("/tasks/:id", verifyJWT, async (req, res) => {
   try {
     const deletedTask = await deleteTaskById(req.params.id);
 
