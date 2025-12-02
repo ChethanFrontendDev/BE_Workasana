@@ -183,6 +183,32 @@ app.get("/projects", verifyJWT, async (req, res) => {
   }
 });
 
+// DELETE Project
+async function deleteProjectById(id) {
+  try {
+    const deleteProject = await Project.findByIdAndDelete(id);
+    return deleteProject;
+  } catch (error) {
+    throw error;
+  }
+}
+app.delete("/projects/:id", async (req, res) => {
+  try {
+    const deletedProject = await deleteProjectById(req.params.id);
+
+    if (!deletedProject) {
+      res.status(404).json({ error: "Project not found." });
+    }
+
+    res.json({
+      message: "Project deleted successfully.",
+      project: deletedProject,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete project." });
+  }
+});
+
 // Owner or user
 async function createUser(userDetails) {
   try {
@@ -328,6 +354,27 @@ app.get("/teams/:teamId/members", async (req, res) => {
   }
 });
 
+async function deleteTeamById(teamId) {
+  try {
+    const deleteTeam = await Team.findByIdAndDelete(teamId);
+    return deleteTeam;
+  } catch (error) {
+    throw error;
+  }
+}
+app.delete("/teams/:teamId", async (req, res) => {
+  try {
+    const deletedTeam = await deleteTeamById(req.params.teamId);
+
+    if (!deletedTeam) {
+      res.status(404).json({ error: "Team not found." });
+    }
+    res.json({ message: "Team deleted successfully.", team: deletedTeam });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete team." });
+  }
+});
+
 // Add team members
 async function addTeamMembers(teamId, userId) {
   try {
@@ -424,7 +471,6 @@ app.get("/tags", verifyJWT, async (req, res) => {
 });
 
 // Task
-
 async function createTask(taskDetails) {
   try {
     const addNewTask = new Task(taskDetails);
@@ -562,6 +608,32 @@ app.put("/tasks/:id", async (req, res) => {
     res.json({ message: "Task marked as complete", task: updatedTask });
   } catch (error) {
     res.status(500).json({ error: "Failed to update task." });
+  }
+});
+
+// DELETE Task
+async function deleteTaskById(id) {
+  try {
+    const deleteTask = await Task.findByIdAndDelete(id);
+    return deleteTask;
+  } catch (error) {
+    throw error;
+  }
+}
+app.delete("/tasks/:id", async (req, res) => {
+  try {
+    const deletedTask = await deleteTaskById(req.params.id);
+
+    if (!deletedTask) {
+      return res.status(404).json({ error: "Task not found." });
+    }
+
+    res.json({
+      message: "Task deleted successfully.",
+      task: deletedTask,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete task." });
   }
 });
 
